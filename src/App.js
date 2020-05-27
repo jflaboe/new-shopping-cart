@@ -3,6 +3,16 @@ import { Container, Button } from '@material-ui/core';
 import ProductCardList from './ProductCardList';
 import ShoppingCart from './ShoppingCart';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import firebase from 'firebase/app';
+import 'firebase/database';
+const firebaseConfig = {
+  apiKey: "AIzaSyDyZwHISHyXc-bb5FteyOjYCQauZ3tkHyA",
+  databaseURL: "https://new-react-shopping-car.firebaseio.com/",
+  projectId: "new-react-shopping-car"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database().ref("/");
+
 
 const App = () => {
   const [data, setData] = useState({});
@@ -18,7 +28,7 @@ const App = () => {
     var currentItems = [...shoppingCartItems];
     
     for (var i = 0; i < currentItems.length; i++) {
-      if (item.sku == currentItems[i].sku && size == currentItems[i].size) {
+      if (item.sku === currentItems[i].sku && size === currentItems[i].size) {
         
         item.quantity = currentItems[i].quantity + 1;
         currentItems[i] = item;
@@ -38,7 +48,7 @@ const App = () => {
     var newItems = [...shoppingCartItems];
     
     for (var i = 0; i < newItems.length; i++){
-      if (newItems[i].sku == sku && newItems[i].size == size) {
+      if (newItems[i].sku === sku && newItems[i].size === size) {
         inventory[sku][size] += newItems[i].quantity
         setInventory(inventory);
         newItems.splice(i, 1);
@@ -55,19 +65,42 @@ const App = () => {
       const json = await response.json();
       setData(json);
     };
+    
     const fetchInventory = async () => {
       const response = await fetch('./data/inventory.json');
       const json = await response.json();
       setInventory(json);
     }
     fetchInventory();
+    db.on('value', function(snapshot){
+      console.log(snapshot.val());
+      setInventory(snapshot.val());
+    })
+    db.once('value').then(function(snapshot) {
+      console.log(snapshot.val());
+      setInventory(snapshot.val());
+    })
     fetchProducts();
   }, []);
+
+  function completePurchase() {
+    var newInventory = {}
+    for (var i in inventory)
+      newInventory[i] = inventory[i];
+
+    var cost = 0;
+    for (var i = 0; i < shoppingCartItems.length; i++){
+      cost += shoppingCartItems[i].price * shoppingCartItems[i].quantity;
+    }
+    setShoppingCartItems([]);
+    alert('The total cost was $' + cost.toFixed(2).toString())
+    db.set(newInventory);
+  }
 
   return (
     <Container>
       <ProductCardList data={products} addItem={addItem} inventory={inventory} />
-      <ShoppingCart items={shoppingCartItems} isOpen={shoppingCartOpen} setIsOpen={setShoppingCartOpen} delItem={removeItem}/>
+      <ShoppingCart saveTransaction={completePurchase} items={shoppingCartItems} isOpen={shoppingCartOpen} setIsOpen={setShoppingCartOpen} delItem={removeItem}/>
       <Button onClick={()=>{setShoppingCartOpen(true)}} style={{position: 'absolute', top: 0, 'right': 0}}>
         <ShoppingCartIcon />
       </Button>

@@ -73,6 +73,7 @@ export default function ShoppingCart(props) {
                         <Typography style={{textAlign: "right", paddingRight: 20}}>${totalCost.toFixed(2)}</Typography>
                     </Grid>
                 </Grid>
+                <Button onClick={props.saveTransaction}>Complete Purchase</Button>
             </Grid>
             </Grid>
         </Drawer></React.Fragment>
