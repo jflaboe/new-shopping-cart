@@ -29,11 +29,14 @@ export default function ProductCard(props){
                         <Container>
                             <Grid container direction="row" justify="space-evenly">
                                 {["S", "M", "L", "XL"].map((size, index)=> {
-                                    return (
-                                        <Grid key={index} item>
-                                            <Button onClick={() => props.addItem(newProductInfo, size)} style={{fontSize: props.cardWidth / 20}}>{size}</Button>
-                                        </Grid>
-                                    )
+                                    if (props.inventory[size] > 0){
+                                        return (
+                                            <Grid key={index} item>
+                                                <Button onClick={() => props.addItem(newProductInfo, size)} style={{fontSize: props.cardWidth / 20}}>{size}</Button>
+                                            </Grid>
+                                        )
+                                    }
+                                    
                                        
                                 })}
                                 
