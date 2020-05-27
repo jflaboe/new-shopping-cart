@@ -7,9 +7,10 @@ import RemoveIcon from '@material-ui/icons/Remove';
 
 function ShoppingCartItem(props){
     const item = props.item;
-    
     const [imgSize, setImgSize] = useState(19);
-    
+    var newProductInfo = {};
+    for (var i in item)
+        newProductInfo[i] = item[i];
 
 
     return (
@@ -23,7 +24,7 @@ function ShoppingCartItem(props){
                 <Typography>Quantity: {item.quantity}</Typography>
             </Grid>
             <Grid item>
-                <Button align={'right'}><CloseIcon/></Button>
+                <Button onClick={() => {props.delItem(newProductInfo.sku, newProductInfo.size)}} align={'right'}><CloseIcon/></Button>
             </Grid>
         </Grid>
     )

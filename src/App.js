@@ -8,22 +8,16 @@ const App = () => {
   const [data, setData] = useState({});
   const [shoppingCartOpen, setShoppingCartOpen] = useState(true);
   var [shoppingCartItems, setShoppingCartItems] = useState([]);
-  console.log(shoppingCartItems);
+  
+  
   function addItem(item, size) {
-    console.log('add item')
+    
     item.quantity = 1;
     item.size = size;
-    console.log(item);
-    console.log(shoppingCartItems)
     var currentItems = [...shoppingCartItems];
     
-    console.log(currentItems);
     for (var i = 0; i < currentItems.length; i++) {
-      console.log("items")
-      console.log(currentItems[i]);
-      console.log(item)
       if (item.sku == currentItems[i].sku && size == currentItems[i].size) {
-        console.log('add to existing item')
         
         item.quantity = currentItems[i].quantity + 1;
         currentItems[i] = item;
@@ -31,10 +25,23 @@ const App = () => {
         return 
       }
     }
-    console.log('adding new item');
+    
     setShoppingCartItems(currentItems.concat([item]));
     return
   }
+
+  function removeItem(sku, size){
+    var newItems = [...shoppingCartItems];
+    
+    for (var i = 0; i < newItems.length; i++){
+      if (newItems[i].sku == sku && newItems[i].size == size) {
+        newItems.splice(i, 1);
+        setShoppingCartItems(newItems);
+        return
+      }
+    }
+  }
+
   const products = Object.values(data);
   useEffect(() => {
     const fetchProducts = async () => {
@@ -49,7 +56,7 @@ const App = () => {
     <Container>
       
       <ProductCardList data={products} addItem={addItem} />
-      <ShoppingCart items={shoppingCartItems} isOpen={shoppingCartOpen} setIsOpen={setShoppingCartOpen}/>
+      <ShoppingCart items={shoppingCartItems} isOpen={shoppingCartOpen} setIsOpen={setShoppingCartOpen} delItem={removeItem}/>
       <Button onClick={()=>{setShoppingCartOpen(true)}} style={{position: 'absolute', top: 0, 'right': 0}}>
         <ShoppingCartIcon />
       </Button>
