@@ -32,7 +32,7 @@ export default function ProductCardList(props){
         <GridList ref={ref}>
             {props.data.map((product) =>{
                return (
-               <ProductCard key={product.sku} data={product} cardWidth={cardSize}/>)
+               <ProductCard addItem={props.addItem} key={product.sku} data={product} cardWidth={cardSize}/>)
             })}
             
         </GridList>

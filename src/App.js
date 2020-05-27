@@ -8,18 +8,32 @@ const App = () => {
   const [data, setData] = useState({});
   const [shoppingCartOpen, setShoppingCartOpen] = useState(true);
   var [shoppingCartItems, setShoppingCartItems] = useState([]);
-  function addItem(item) {
-    for (var i = 0; i < shoppingCartItems.length; i++) {
-      if (item.sku === shoppingCartItems[i] && item.size === shoppingCartItems[i].size) {
-        shoppingCartItems[i].quantity = shoppingCartItems[i].quantity + 1;
-        setShoppingCartItems(shoppingCartItems);
+  console.log(shoppingCartItems);
+  function addItem(item, size) {
+    console.log('add item')
+    item.quantity = 1;
+    item.size = size;
+    console.log(item);
+    console.log(shoppingCartItems)
+    var currentItems = [...shoppingCartItems];
+    
+    console.log(currentItems);
+    for (var i = 0; i < currentItems.length; i++) {
+      console.log("items")
+      console.log(currentItems[i]);
+      console.log(item)
+      if (item.sku == currentItems[i].sku && size == currentItems[i].size) {
+        console.log('add to existing item')
+        
+        item.quantity = currentItems[i].quantity + 1;
+        currentItems[i] = item;
+        setShoppingCartItems(currentItems);
         return 
       }
-
-      shoppingCartItems.push(item);
-      setShoppingCartItems(shoppingCartItems);
-
     }
+    console.log('adding new item');
+    setShoppingCartItems(currentItems.concat([item]));
+    return
   }
   const products = Object.values(data);
   useEffect(() => {
@@ -34,8 +48,8 @@ const App = () => {
   return (
     <Container>
       
-      <ProductCardList data={products} />
-      <ShoppingCart items={[]} isOpen={shoppingCartOpen} setIsOpen={setShoppingCartOpen}/>
+      <ProductCardList data={products} addItem={addItem} />
+      <ShoppingCart items={shoppingCartItems} isOpen={shoppingCartOpen} setIsOpen={setShoppingCartOpen}/>
       <Button onClick={()=>{setShoppingCartOpen(true)}} style={{position: 'absolute', top: 0, 'right': 0}}>
         <ShoppingCartIcon />
       </Button>

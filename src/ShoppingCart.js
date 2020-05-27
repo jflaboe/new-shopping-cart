@@ -13,13 +13,13 @@ function ShoppingCartItem(props){
 
 
     return (
-        <Grid container direction="row" spacing={3}>
+        <Grid container alignItems="center" direction="row" style={{marginBottom: 30}}>
             <Grid item xs={2}>
-                <img src={"./data/products/" + item.sku.toString() + '_2.jpg'} style={{width: imgSize}}/>
+                <img src={"./data/products/" + item.sku.toString() + '_2.jpg'} style={{width:'100%'}}/>
             </Grid>
-            <Grid item xs={8}>
+            <Grid item xs={8} style={{paddingLeft: 8}}>
                 <Typography>{item.title}</Typography>
-                <Typography>{item.size}|{item.description}</Typography>
+                <Typography>{item.size} | {item.description}</Typography>
                 <Typography>Quantity: {item.quantity}</Typography>
             </Grid>
             <Grid item>
@@ -46,14 +46,14 @@ export default function ShoppingCart(props) {
         <Drawer variant='persistent' anchor="right" open={isOpen} style={{width: '30%'}}>
             <Grid container direction="column" style={{width: 400}}>
             <Grid item>
-                <Container style={{height: height * 0.11, borderBottomStyle: 'solid'}}>
+                <Container style={{height: height * 0.11, borderBottomStyle: 'solid', padding: 0}}>
                     <Button onClick={() => {setIsOpen(false);}}><CloseIcon /></Button>
                     
                     <Typography style={{textAlign: "center", width: '100%'}}>Shopping Cart</Typography>
                 </Container>
             </Grid>
             <Grid item>
-            <Container style={{height: height * 0.65}}>
+            <Container style={{height: height * 0.65, padding: 0, overflowY: 'auto'}}>
                 {items.map((item, index) => {
                     return (
                         <ShoppingCartItem key={index} item={item} delItem={delItem} />
@@ -63,7 +63,7 @@ export default function ShoppingCart(props) {
             </Container>
                 
             </Grid>
-            <Grid item>
+            <Grid item style={{borderTop: 'solid', paddingTop: 20}}>
                 <Grid container direction="row">
                     <Grid item xs={6}>
                         <Typography style={{textAlign: "left", paddingLeft: 20}}>Subtotal:</Typography>

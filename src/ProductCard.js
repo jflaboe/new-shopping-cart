@@ -2,7 +2,11 @@ import React from 'react';
 import { Card, Typography, Grid, GridListTile, GridListTileBar, Container, Button } from '@material-ui/core';
 
 export default function ProductCard(props){
-    const productInfo = props.data;
+    var productInfo = props.data;
+    var newProductInfo = {};
+    for (var i in productInfo)
+        newProductInfo[i] = productInfo[i];
+    
 
     return (
         <GridListTile style={{width: props.cardWidth, padding: 10}}>
@@ -17,25 +21,22 @@ export default function ProductCard(props){
                         <Typography align="center" style={{fontSize: props.cardWidth / 15}}>{productInfo.title}</Typography>
                     </Grid>
                     <Grid item>
-                        <Typography style={{minHeight: 30, fontSize: props.cardWidth / 18, color: "gray"}} align="center">{productInfo.description}</Typography>
+                        <Typography style={{minHeight: 30, fontSize: props.cardWidth / 18, color: "gray"}} align="center">{newProductInfo.description}</Typography>
                         <Typography align="center">${productInfo.price.toFixed(2)}</Typography>
                     </Grid>
                     <Grid item>
                         <Typography style={{marginTop: 10, textAlign: "center"}}>Add to Cart</Typography>    
                         <Container>
                             <Grid container direction="row" justify="space-evenly">
-                                <Grid item>
-                                    <Button style={{fontSize: props.cardWidth / 20}}>S</Button>
-                                </Grid>
-                                <Grid item>
-                                    <Button style={{fontSize: props.cardWidth / 20}}>M</Button>
-                                </Grid>
-                                <Grid item>
-                                    <Button style={{fontSize: props.cardWidth / 20}}>L</Button>
-                                </Grid>
-                                <Grid item>
-                                    <Button style={{fontSize: props.cardWidth / 20}}>XL</Button>
-                                </Grid>
+                                {["S", "M", "L", "XL"].map((size, index)=> {
+                                    return (
+                                        <Grid key={index} item>
+                                            <Button onClick={() => props.addItem(newProductInfo, size)} style={{fontSize: props.cardWidth / 20}}>{size}</Button>
+                                        </Grid>
+                                    )
+                                       
+                                })}
+                                
                             </Grid>
                         </Container>
                     </Grid>
