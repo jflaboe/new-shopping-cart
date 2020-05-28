@@ -1,20 +1,51 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Button } from '@material-ui/core';
+import { Container, Button, AppBar, Typography, Grid } from '@material-ui/core';
 import ProductCardList from './ProductCardList';
 import ShoppingCart from './ShoppingCart';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import firebase from 'firebase/app';
 import 'firebase/database';
+import 'firebase/auth';
+import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+
+const uiConfig = {
+  signInFlow: 'popup',
+  signInOptions: [
+    firebase.auth.GoogleAuthProvider.PROVIDER_ID
+  ],
+  callbacks: {
+    signInSuccessWithAuthResult: () => false
+  }
+};
+
+const SignIn = () => (
+  <StyledFirebaseAuth
+    uiConfig={uiConfig}
+    firebaseAuth={firebase.auth()}
+  />
+);
+
 const firebaseConfig = {
   apiKey: "AIzaSyDyZwHISHyXc-bb5FteyOjYCQauZ3tkHyA",
+  authDomain: "new-react-shopping-car.firebaseapp.com",
   databaseURL: "https://new-react-shopping-car.firebaseio.com/",
   projectId: "new-react-shopping-car"
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database().ref("/");
 
+function Header(props) {
+  console.log(props.user);
+  return (
+    <AppBar position="static">
+      <Typography>Welcome {props.user.displayName}</Typography>
+      <Button onClick={() => {firebase.auth().signOut()}}>Signout</Button>
+    </AppBar>
+  )
+}
 
 const App = () => {
+  const [user, setUser] = useState(null);
   const [data, setData] = useState({});
   var [inventory, setInventory] = useState({});
   const [shoppingCartOpen, setShoppingCartOpen] = useState(true);
@@ -60,6 +91,7 @@ const App = () => {
 
   const products = Object.values(data);
   useEffect(() => {
+    firebase.auth().onAuthStateChanged(setUser);
     const fetchProducts = async () => {
       const response = await fetch('./data/products.json');
       const json = await response.json();
@@ -99,11 +131,14 @@ const App = () => {
 
   return (
     <Container>
+      {!user && <SignIn/>}
+      {user && <Header user={user}/>}
       <ProductCardList data={products} addItem={addItem} inventory={inventory} />
       <ShoppingCart saveTransaction={completePurchase} items={shoppingCartItems} isOpen={shoppingCartOpen} setIsOpen={setShoppingCartOpen} delItem={removeItem}/>
       <Button onClick={()=>{setShoppingCartOpen(true)}} style={{position: 'absolute', top: 0, 'right': 0}}>
         <ShoppingCartIcon />
       </Button>
+
     </Container>
     
   );
