@@ -134,7 +134,7 @@ const App = () => {
       {!user && <SignIn/>}
       {user && <Header user={user}/>}
       <ProductCardList data={products} addItem={addItem} inventory={inventory} />
-      <ShoppingCart saveTransaction={completePurchase} items={shoppingCartItems} isOpen={shoppingCartOpen} setIsOpen={setShoppingCartOpen} delItem={removeItem}/>
+      <ShoppingCart user={user} saveTransaction={completePurchase} items={shoppingCartItems} isOpen={shoppingCartOpen} setIsOpen={setShoppingCartOpen} delItem={removeItem}/>
       <Button onClick={()=>{setShoppingCartOpen(true)}} style={{position: 'absolute', top: 0, 'right': 0}}>
         <ShoppingCartIcon />
       </Button>
